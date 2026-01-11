@@ -187,6 +187,62 @@ public class ProductionDAO implements GenericDAO<ProductionDTO, Integer> {
         return list;
     }
 
+    /**
+     * Retrieves all productions assigned to a specific Casting Director via the Team table.
+     * Used to populate the dropdown in the Create Casting form.
+     *
+     * @param cdID the Casting Director's ID.
+     * @return List of ProductionDTOs the CD is working on.
+     */
+    public List<ProductionDTO> getProductionsByCdID(int cdID) throws SQLException {
+        String sql = "SELECT p.* FROM Production p " +
+                "JOIN Team t ON p.ProductionID = t.ProductionID " +
+                "WHERE t.CdID = ? ORDER BY p.CreationDate DESC";
+
+        List<ProductionDTO> list = new ArrayList<>();
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, cdID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    // Reuse your existing extraction method
+                    list.add(extractProductionFromResultSet(rs));
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * Retrieves only the title of a production given its unique identifier.
+     * <p>
+     * This is a lightweight utility method designed for scenarios where only the
+     * production name is required (e.g., populating tables, lists, or dropdowns),
+     * avoiding the overhead of retrieving and mapping the full {@link model.dto.ProductionDTO} object.
+     * </p>
+     *
+     * @param productionID the unique identifier of the production to search for.
+     * @return the title of the production as a {@code String} if found; otherwise returns "Unknown".
+     * @throws SQLException if a database access error occurs during the query execution.
+     */
+    public String getTitleByID(int productionID) throws SQLException {
+        String sql = "SELECT Title FROM Production WHERE ProductionID = ?";
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, productionID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("Title");
+                }
+            }
+        }
+        return "Unknown";
+    }
+
     // --- Helper Methods ---
 
     private void setStatementParameters(PreparedStatement ps, ProductionDTO prod) throws SQLException {
