@@ -207,6 +207,31 @@ public class CastingDAO implements GenericDAO<CastingDTO, Integer> {
         return list;
     }
 
+    /**
+     * Retrieves all active casting calls (where the deadline is today or in the future) for the Home Page.
+     *
+     * @return a {@code List} of active {@link CastingDTO} objects, ordered by publish date descending.
+     * @throws SQLException if a database access error occurs.
+     */
+    public List<CastingDTO> getAllActive() throws SQLException {
+        String sql = "SELECT c.*, p.Title as ProductionTitle " +
+                "FROM Casting c " +
+                "JOIN Production p ON c.ProductionID = p.ProductionID " +
+                "WHERE c.DeadLine >= CURRENT_DATE " +
+                "ORDER BY c.PublishDate DESC";
+
+        List<CastingDTO> list = new ArrayList<>();
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(extractCastingFromResultSet(rs));
+            }
+        }
+        return list;
+    }
+
     // --- Helper Methods ---
 
     private void setStatementParameters(PreparedStatement ps, CastingDTO casting) throws SQLException {
@@ -257,8 +282,8 @@ public class CastingDAO implements GenericDAO<CastingDTO, Integer> {
         }
 
         Timestamp ts2 = rs.getTimestamp("DeadLine");
-        if (ts != null) {
-            c.setDeadline(ts.toLocalDateTime());
+        if (ts2 != null) {
+            c.setDeadline(ts2.toLocalDateTime());
         }
 
         c.setTitle(rs.getString("Title"));
