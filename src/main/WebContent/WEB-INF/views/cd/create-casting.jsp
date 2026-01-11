@@ -99,7 +99,7 @@
             </button>
 
             <div class="text-center mt-2">
-                <a href="${pageContext.request.contextPath}/cd/dashboard" class="login-link">Annulla</a>
+                <a href="${pageContext.request.contextPath}/" class="login-link">Annulla</a>
             </div>
 
         </form>
