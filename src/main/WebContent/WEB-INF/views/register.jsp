@@ -150,7 +150,7 @@
                 </div>
 
                 <div class="mb-2">
-                    <label for="cvFile">Curriculum Vitae (PDF)</label>
+                    <label for="cvFile">Curriculum Vitae (PDF) <span class="required-asterisk">*</span></label>
                     <input type="file" id="cvFile" name="cvFile"
                            accept="application/pdf"
                            title="Formato PDF, max 10MB">

@@ -76,9 +76,19 @@ document.addEventListener('DOMContentLoaded', function() {
     function togglePerformer() {
         if (roleSelect.value === 'Performer') {
             performerFields.style.display = 'block';
+
+            if(document.getElementById('cvFile')) {
+                document.getElementById('cvFile').setAttribute('required', 'required');
+            }
+
             setTimeout(() => performerFields.scrollIntoView({behavior: 'smooth', block: 'nearest'}), 100);
         } else {
             performerFields.style.display = 'none';
+
+            if(document.getElementById('cvFile')) {
+                document.getElementById('cvFile').removeAttribute('required');
+            }
+
             const hiddenInputs = performerFields.querySelectorAll('input, select, textarea');
             hiddenInputs.forEach(i => i.value = '');
         }

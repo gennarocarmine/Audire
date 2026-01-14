@@ -85,6 +85,7 @@ public class Registration extends HttpServlet {
             String catParam = req.getParameter("category");
             String description = req.getParameter("description");
             Part photoPart = req.getPart("profilePhoto");
+            Part cvPart = req.getPart("cvFile");
 
             if (genderParam == null || genderParam.isEmpty()) errors.add("Seleziona un genere.");
             if (catParam == null || catParam.isEmpty()) errors.add("Seleziona una categoria.");
@@ -93,6 +94,12 @@ public class Registration extends HttpServlet {
             // Verifica presenza file foto
             if (photoPart == null || photoPart.getSize() == 0) {
                 errors.add("La foto profilo è obbligatoria per i Performer.");
+            }
+
+            if (cvPart == null || cvPart.getSize() == 0) {
+                errors.add("Il Curriculum Vitae è obbligatorio.");
+            } else if (!cvPart.getContentType().equals("application/pdf")) {
+                errors.add("Il CV deve essere in formato PDF.");
             }
         }
 
