@@ -203,6 +203,31 @@ public class ApplicationDAO implements GenericDAO<ApplicationDTO, Integer> {
         return list;
     }
 
+    /**
+     * Checks if a specific performer has already submitted an application for a given casting.
+     * <p>
+     * This method is typically used to prevent duplicate applications by verifying
+     * if an entry already exists in the {@code Application} table linking the specified
+     * performer and casting IDs.
+     * </p>
+     *
+     * @param performerID the unique identifier of the Performer.
+     * @param castingID   the unique identifier of the Casting.
+     * @return {@code true} if an application already exists, {@code false} otherwise.
+     * @throws SQLException if a database access error occurs during the query execution.
+     */
+    public boolean hasApplied(int performerID, int castingID) throws SQLException {
+        String sql = "SELECT 1 FROM Application WHERE PerformerID = ? AND CastingID = ?";
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, performerID);
+            ps.setInt(2, castingID);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next(); // True se trova una riga
+            }
+        }
+    }
+
     // --- Helper Methods ---
 
     private void setStatementParameters(PreparedStatement ps, ApplicationDTO app) throws SQLException {
@@ -243,7 +268,6 @@ public class ApplicationDAO implements GenericDAO<ApplicationDTO, Integer> {
         return app;
     }
 
-    // Mapping: "In attesa" <-> IN_ATTESA
     private String mapStatusToDb(ApplicationDTO.Status status) {
         switch (status) {
             case In_attesa: return "In attesa";
@@ -256,8 +280,7 @@ public class ApplicationDAO implements GenericDAO<ApplicationDTO, Integer> {
 
     private ApplicationDTO.Status mapDbToStatus(String dbValue) {
         try {
-            // "In attesa" -> "IN_ATTESA"
-            String normalized = dbValue.toUpperCase().replace(" ", "_");
+            String normalized = dbValue.replace(" ", "_");
             return ApplicationDTO.Status.valueOf(normalized);
         } catch (IllegalArgumentException e) {
             return ApplicationDTO.Status.In_attesa;
