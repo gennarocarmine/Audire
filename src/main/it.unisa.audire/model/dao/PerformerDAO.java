@@ -191,6 +191,33 @@ public class PerformerDAO implements GenericDAO<PerformerDTO, Integer>{
         return list;
     }
 
+    /**
+     * Retrieves only the Curriculum Vitae (CV) binary data and its MIME type for a specific performer.
+     *
+     * @param performerID the unique identifier of the performer.
+     * @return a {@link PerformerDTO} populated only with the CV binary data and MIME type,
+     * or {@code null} if no performer is found with the given ID.
+     * @throws SQLException if a database access error occurs during the query execution.
+     */
+    public PerformerDTO getCvData(int performerID) throws SQLException {
+        String sql = "SELECT CV_Data, CV_MimeType FROM Performer WHERE PerformerID = ?";
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, performerID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    PerformerDTO p = new PerformerDTO();
+                    p.setCvData(rs.getBytes("CV_Data"));
+                    p.setCvMimeType(rs.getString("CV_MimeType"));
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
+
     // --- Helper Methods ---
 
     /**
