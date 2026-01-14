@@ -1,4 +1,4 @@
-package controller;
+package controller.gestioneCandidature;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,7 +10,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet("/casting-details")
-public class CastingDetails extends HttpServlet {
+public class GetCastingDetails extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idStr = req.getParameter("id");
@@ -37,7 +37,6 @@ public class CastingDetails extends HttpServlet {
             // Recupera Titolo Produzione
             String productionTitle = prodDAO.getTitleByID(casting.getProductionID());
 
-            // LOGICA BOTTONE: L'utente si è già candidato?
             boolean alreadyApplied = false;
             UserDTO user = (UserDTO) req.getSession().getAttribute("user");
 
