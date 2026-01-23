@@ -65,9 +65,28 @@ public class AddCasting extends HttpServlet {
         DataSource ds = (DataSource) getServletContext().getAttribute("ds");
         CastingDAO castingDAO = new CastingDAO(ds);
         CastingDirectorDAO cdDAO = new CastingDirectorDAO(ds);
+        ProductionDAO prodDAO = new ProductionDAO(ds);
 
         try {
             CastingDirectorDTO cdDTO = cdDAO.getByUserID(user.getUserID());
+
+            int targetProductionId = Integer.parseInt(productionIdStr);
+
+            List<ProductionDTO> authorizedProductions = prodDAO.getProductionsByCdID(cdDTO.getCdID());
+
+            boolean isAuthorized = false;
+            for (ProductionDTO prod : authorizedProductions) {
+                if (prod.getProductionID() == targetProductionId) {
+                    isAuthorized = true;
+                    break;
+                }
+            }
+
+            if (!isAuthorized) {
+                NotificationUtil.sendNotification(req, "Non sei autorizzato a creare casting per questa produzione.", "error");
+                doGet(req, resp);
+                return;
+            }
 
             CastingDTO casting = new CastingDTO();
             casting.setTitle(title);
