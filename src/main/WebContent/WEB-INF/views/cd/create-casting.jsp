@@ -37,7 +37,7 @@
             </div>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/cd/create-casting" method="post" id="castingForm">
+        <form action="${pageContext.request.contextPath}/cd/create-casting" method="post" id="castingForm" novalidate>
 
             <div class="form-grid">
 
@@ -49,6 +49,8 @@
                             <option value="${prod.productionID}">${prod.title} (${prod.type})</option>
                         </c:forEach>
                     </select>
+                    <small class="error-text"></small>
+
                     <c:if test="${empty myProductions}">
                         <small class="text-danger">Attenzione: Non sei assegnato a nessuna produzione attiva.</small>
                     </c:if>
@@ -56,8 +58,9 @@
 
                 <div class="form-group full-width">
                     <label for="title" class="form-label">Titolo Annuncio <span class="required-asterisk">*</span></label>
-                    <input type="text" id="title" name="title" class="form-input" required
+                    <input type="text" id="title" name="title" class="form-input" required minlength="5"
                            placeholder="Es. Cercasi attore protagonista per thriller">
+                    <small class="error-text"></small>
                 </div>
 
                 <div class="form-group">
@@ -71,23 +74,27 @@
                         <option value="Cantante">Cantante</option>
                         <option value="Qualsiasi">Altro</option>
                     </select>
+                    <small class="error-text"></small>
                 </div>
 
                 <div class="form-group">
                     <label for="deadline" class="form-label">Scadenza Candidature <span class="required-asterisk">*</span></label>
                     <input type="date" id="deadline" name="deadline" class="form-input" required>
+                    <small class="error-text"></small>
                 </div>
 
                 <div class="form-group full-width">
                     <label for="location" class="form-label">Luogo (o Remoto) <span class="required-asterisk">*</span></label>
                     <input type="text" id="location" name="location" class="form-input" required
                            placeholder="Es. Roma, Milano, o 'Casting Online'">
+                    <small class="error-text"></small>
                 </div>
 
                 <div class="form-group full-width">
                     <label for="description" class="form-label">Descrizione e Requisiti <span class="required-asterisk">*</span></label>
-                    <textarea id="description" name="description" class="form-textarea" required
+                    <textarea id="description" name="description" class="form-textarea" required minlength="20"
                               placeholder="Descrivi il ruolo, l'età scenica, caratteristiche fisiche, skill richieste..."></textarea>
+                    <small class="error-text"></small>
                     <small class="char-counter">Minimo 20 caratteri</small>
                 </div>
 
