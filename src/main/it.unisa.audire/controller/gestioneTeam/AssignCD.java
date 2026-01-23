@@ -41,7 +41,13 @@ public class AssignCD extends HttpServlet {
             ProductionDTO production = prodDAO.getByID(prodID);
             ProductionManagerDTO pmDTO = pmDAO.getByUserID(user.getUserID());
 
-            if (production == null || pmDTO == null || production.getPmID() != pmDTO.getPmID()) {
+            if (production == null) {
+                NotificationUtil.sendNotification(req, "Produzione non trovata.", "error");
+                resp.sendRedirect(req.getContextPath() + "/pm/productions");
+                return;
+            }
+
+            if (pmDTO == null || production.getPmID() != pmDTO.getPmID()) {
                 NotificationUtil.sendNotification(req, "Accesso negato.", "error");
                 resp.sendRedirect(req.getContextPath() + "/pm/productions");
                 return;
