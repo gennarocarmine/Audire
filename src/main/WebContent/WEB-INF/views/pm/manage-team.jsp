@@ -31,27 +31,31 @@
 
     <div class="card team-card">
         <h4><i class="fas fa-user-plus"></i> Aggiungi Casting Director</h4>
-        <p>Seleziona un professionista disponibile dalla lista (Nome e Email).</p>
+        <p>Scrivi il nome o l'email per cercare un professionista.</p>
 
-        <form action="${pageContext.request.contextPath}/pm/team" method="post" class="team-form">
+        <form action="${pageContext.request.contextPath}/pm/team" method="post" class="team-form" id="addMemberForm">
             <input type="hidden" name="action" value="add">
             <input type="hidden" name="productionId" value="${production.productionID}">
 
-            <div class="team-select-group">
-                <label for="userId" class="team-select-label">Seleziona Utente:</label>
+            <div class="team-select-group autocomplete-container">
+                <label for="cdSearchInput" class="team-select-label">Cerca Casting Director:</label>
 
-                <select name="userId" id="userId" required class="team-select">
-                    <option value="">-- Seleziona un Casting Director --</option>
+                <div class="input-wrapper">
+                    <input type="text" id="cdSearchInput" class="form-input"
+                           placeholder="Es. Mario Rossi o mario@email.com" autocomplete="off">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
 
-                    <c:forEach var="cd" items="${availableCDs}">
-                        <option value="${cd.userID}">
-                                ${cd.firstName} ${cd.lastName} &nbsp; • &nbsp; ${cd.email}
-                        </option>
-                    </c:forEach>
-                </select>
+                <div id="suggestionsList" class="suggestions-dropdown"></div>
+
+                <input type="hidden" name="userId" id="selectedUserId" required>
+
+                <span id="selectionError" class="text-danger" style="display:none; font-size: 0.85rem;">
+                    Seleziona un nome dalla lista dei suggerimenti.
+                </span>
             </div>
 
-            <button type="submit" class="btn btn-primary" ${empty availableCDs ? 'disabled' : ''}>
+            <button type="submit" class="btn btn-primary" id="btnAddMember">
                 Assegna al Team
             </button>
         </form>
@@ -93,10 +97,8 @@
                                 </td>
                                 <td class="text-center">
                                     <form action="${pageContext.request.contextPath}/pm/remove-team-member" method="post" style="margin: 0;">
-
                                         <input type="hidden" name="productionId" value="${production.productionID}">
                                         <input type="hidden" name="userId" value="${member.userID}">
-
                                         <button type="submit" class="btn-circle btn-delete" title="Rimuovi dal team"
                                                 onclick="return confirm('Sei sicuro di voler rimuovere ${member.firstName} ${member.lastName} dal team?');">
                                             <i class="fas fa-user-minus"></i>
@@ -126,6 +128,20 @@
 
 <jsp:include page="/WEB-INF/components/footer.jsp" />
 <script src="${pageContext.request.contextPath}/scripts/mobile-menu.js"></script>
+
+<script>
+    const availableDirectors = [
+        <c:forEach var="cd" items="${availableCDs}">
+        {
+            id: "${cd.userID}",
+            fullName: "${cd.firstName} ${cd.lastName}",
+            email: "${cd.email}"
+        },
+        </c:forEach>
+    ];
+</script>
+
+<script src="${pageContext.request.contextPath}/scripts/autocomplete-cd.js"></script>
 
 </body>
 </html>
