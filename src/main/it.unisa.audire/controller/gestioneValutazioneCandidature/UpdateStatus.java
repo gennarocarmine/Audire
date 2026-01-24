@@ -55,6 +55,12 @@ public class UpdateStatus extends HttpServlet {
                 return;
             }
 
+            if (app.getStatus() == ApplicationDTO.Status.Rifiutata || app.getStatus() == ApplicationDTO.Status.Selezionata) {
+                NotificationUtil.sendNotification(req, "Impossibile modificare lo stato di una candidatura già finalizzata.", "error");
+                resp.sendRedirect(req.getContextPath() + "/cd/applications?id=" + casting.getCastingID());
+                return;
+            }
+
             if (statusStr != null && !statusStr.isEmpty()) {
                 try {
                     app.setStatus(ApplicationDTO.Status.valueOf(statusStr));
