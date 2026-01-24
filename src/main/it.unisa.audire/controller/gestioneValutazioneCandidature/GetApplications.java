@@ -35,6 +35,7 @@ public class GetApplications extends HttpServlet {
         CastingDAO castingDAO = new CastingDAO(ds);
         PerformerDAO perfDAO = new PerformerDAO(ds);
         UserDAO userDAO = new UserDAO(ds);
+        ProductionDAO prodDAO = new ProductionDAO(ds);
 
         try {
             int castingID = Integer.parseInt(castingIdStr);
@@ -45,7 +46,18 @@ public class GetApplications extends HttpServlet {
             CastingDirectorDTO cdDTO = cdDAO.getByUserID(user.getUserID());
             if (casting == null || casting.getCdID() != cdDTO.getCdID()) {
                 NotificationUtil.sendNotification(req, "Accesso negato.", "error");
-                resp.sendRedirect(req.getContextPath() + "/cd/dashboard");
+                resp.sendRedirect(req.getContextPath() + "/cd/view-castings");
+                return;
+            }
+
+            List<ProductionDTO> authorizedProductions = prodDAO.getProductionsByCdID(cdDTO.getCdID());
+
+            boolean isStillInTeam = authorizedProductions.stream()
+                    .anyMatch(p -> p.getProductionID() == casting.getProductionID());
+
+            if (!isStillInTeam) {
+                NotificationUtil.sendNotification(req, "Non puoi visualizzare le candidature: sei stato rimosso dal team.", "error");
+                resp.sendRedirect(req.getContextPath() + "/cd/view-castings");
                 return;
             }
 

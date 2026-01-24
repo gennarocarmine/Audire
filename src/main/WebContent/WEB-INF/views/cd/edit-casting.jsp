@@ -38,7 +38,7 @@
             </div>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/cd/edit-casting" method="post" id="castingForm">
+        <form action="${pageContext.request.contextPath}/cd/edit-casting" method="post" id="castingForm" novalidate>
 
             <input type="hidden" name="id" value="${casting.castingID}">
 

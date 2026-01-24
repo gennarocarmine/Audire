@@ -64,6 +64,15 @@ public class UpdateCasting extends HttpServlet {
 
             List<ProductionDTO> myProductions = prodDAO.getProductionsByCdID(currentCd.getCdID());
 
+            boolean isTeamMember = myProductions.stream()
+                    .anyMatch(p -> p.getProductionID() == casting.getProductionID());
+
+            if (!isTeamMember) {
+                NotificationUtil.sendNotification(req, "Sei stato rimosso dal team di questa produzione.", "error");
+                resp.sendRedirect(req.getContextPath() + "/cd/view-castings");
+                return;
+            }
+
             req.setAttribute("casting", casting);
             req.setAttribute("myProductions", myProductions);
 
@@ -105,6 +114,7 @@ public class UpdateCasting extends HttpServlet {
         DataSource ds = (DataSource) getServletContext().getAttribute("ds");
         CastingDAO castingDAO = new CastingDAO(ds);
         CastingDirectorDAO cdDAO = new CastingDirectorDAO(ds);
+        ProductionDAO prodDAO = new ProductionDAO(ds);
 
         try {
             int castingID = Integer.parseInt(idStr);
@@ -114,6 +124,25 @@ public class UpdateCasting extends HttpServlet {
 
             if (casting == null || currentCd == null || casting.getCdID() != currentCd.getCdID()) {
                 resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+
+            List<ProductionDTO> authorizedProductions = prodDAO.getProductionsByCdID(currentCd.getCdID());
+
+            boolean isStillInTeam = authorizedProductions.stream()
+                    .anyMatch(p -> p.getProductionID() == casting.getProductionID());
+
+            if (!isStillInTeam) {
+                NotificationUtil.sendNotification(req,"Non fai più parte del team di questa produzione.", "error");
+                return;
+            }
+
+            int newProductionID = Integer.parseInt(productionIdStr);
+            boolean isMemberOfTarget = authorizedProductions.stream()
+                    .anyMatch(p -> p.getProductionID() == newProductionID);
+
+            if (!isMemberOfTarget) {
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Non puoi spostare il casting su una produzione di cui non fai parte.");
                 return;
             }
 
