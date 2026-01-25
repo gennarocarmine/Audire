@@ -100,7 +100,7 @@
                             Accedi per Candidarti
                         </a>
                         <p style="font-size: 0.85rem; color: #666; margin-top: 10px;">
-                            Non hai un account? <a href="${pageContext.request.contextPath}/register">Registrati</a>
+                            Non hai un account? <a href="${pageContext.request.contextPath}/registration">Registrati</a>
                         </p>
                     </c:when>
 
