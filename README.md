@@ -1,12 +1,3 @@
-# is_project
+# Audire
 
-UNISA-Progetto di Ingegneria del Software
-
-Il Corso di Ingegneria del Software prevede un progetto di gruppo obbligatorio per la realizzazione
-di un sistema software, con 
-(i) produzione di documentazione di analisi e di progettazione di alto
-livello per l’intero sistema e 
-(ii) documentazione relativa alla progettazione di basso livello,
-sviluppo del codice e documentazione di pianificazione ed esecuzione del testing per almeno uno
-stralcio del sistema (es. uno o più sottosistemi). 
-
+Audire is a centralized web platform designed to digitize and streamline the entire casting process for the entertainment industry. The system connects Performers, Casting Directors, and Production Managers in a unified ecosystem, ensuring efficiency, traceability, and structured application management. This project was developed as the final assignment for the Software Engineering course at the University of Salerno (UNISA).
